@@ -525,7 +525,7 @@
       "plot": "",
       "pos_files": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "vibration_module.step",
       "svg": "",
       "vrml": ""
     },

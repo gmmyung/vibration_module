@@ -1,2 +1,4 @@
 .cache/clangd/index
 build
+gerber/.DS_Store
+.DS_Store
