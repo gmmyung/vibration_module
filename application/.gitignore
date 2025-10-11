@@ -1,0 +1,137 @@
+*.iml
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Gradle
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+/build/
+/app/build/
+*.apk
+*.aab
+*.dex
+*.class
+
+# liblouis
+/app/src/main/python/transcription/liblouis/
+/app/src/main/jniLibs/
+/app/src/main/assets/tables/
+*.so
+*.dll
+*.dylib
+*.ctb
+*.utb
+*.tbl
+*.dis
+*.uti
+
+# Android NDK
+/app/src/main/cpp/
+.externalNativeBuild/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# IDE
+.vscode/
+*.swp
+*.swo
+
+# Android Studio IDE files
+.idea/
+*.iml
+*.iws
+*.ipr
+.navigation/
+captures/
+output.json
+androidStudio.xml
+encodings.xml
+misc.xml
+modules.xml
+vcs.xml
+workspace.xml
+runConfigurations/
+deployment.xml
+deploymentTarget.xml
+deploymentTargets.xml
+deploymentTargetSelector.xml
+Project_Default.xml
+
+# OS
+Thumbs.db
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Keystore files
+*.jks
+*.keystore
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# NDK
+obj/
+.externalNativeBuild/
+.cxx/
+
+# Unit test reports
+TEST-*.xml
+
+# Release files
+release/
+
+# IDE deployment configurations
+deployment.xml
+deploymentTarget.xml
+deploymentTargets.xml
+
+# Android Studio specific
+androidStudio.xml
+encodings.xml
+misc.xml
+modules.xml
+vcs.xml
+workspace.xml
+runConfigurations/
