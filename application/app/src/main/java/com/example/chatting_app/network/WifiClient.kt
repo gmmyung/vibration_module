@@ -42,9 +42,16 @@ class WifiClient(private val context: Context) {
         // 백그라운드 스레드에서 네트워크 작업 수행
         Thread {
             try {
+                Log.d(TAG, "Creating socket...")
                 socket = Socket(ipAddress, port)
+                
+                Log.d(TAG, "Getting streams...")
                 outputStream = socket?.getOutputStream()
                 inputStream = socket?.getInputStream()
+                
+                Log.d(TAG, "Socket connected: ${socket?.isConnected}")
+                Log.d(TAG, "Socket bound: ${socket?.isBound}")
+                Log.d(TAG, "Socket closed: ${socket?.isClosed}")
                 
                 _connectionState.value = ConnectionState.CONNECTED
                 Log.d(TAG, "Connected successfully to $ipAddress:$port")
@@ -54,6 +61,7 @@ class WifiClient(private val context: Context) {
                 
             } catch (e: Exception) {
                 Log.e(TAG, "Connection failed to $ipAddress:$port: ${e.message}", e)
+                Log.e(TAG, "Exception type: ${e.javaClass.simpleName}")
                 _connectionState.value = ConnectionState.ERROR
             }
         }.start()
@@ -136,6 +144,17 @@ class WifiClient(private val context: Context) {
      */
     fun isConnected(): Boolean {
         return socket?.isConnected == true && _connectionState.value == ConnectionState.CONNECTED
+    }
+    
+    /**
+     * 연결 상태 디버그 정보
+     */
+    fun getDebugInfo(): String {
+        return "Socket: ${socket?.let { "connected=${it.isConnected}, bound=${it.isBound}, closed=${it.isClosed}" } ?: "null"}, " +
+                "State: ${_connectionState.value}, " +
+                "OutputStream: ${outputStream != null}, " +
+                "InputStream: ${inputStream != null}, " +
+                "Receiving: $isReceiving"
     }
 }
 

@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Column
@@ -31,10 +32,10 @@ import androidx.compose.material3.Text
 
 class MainActivity : ComponentActivity() {
     
-    private val viewModel: ChatViewModel by viewModels()
+    private val viewModel: ChatViewModel by viewModels<ChatViewModel>()
     
     // Register the permission launcher during activity creation (before onStart)
-    private val requestPermissionLauncher = registerForActivityResult(
+    private val requestPermissionLauncher: ActivityResultLauncher<String> = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
@@ -134,53 +135,53 @@ fun ChatApp(
             // 기존 채팅 화면
             ChatScreen(
                 modifier = Modifier.fillMaxSize(),
-            // 왼쪽 사용자 (시청각장애인) 점자 입력만 유지
-            onVisualImpairedBrailleMessage = {
-                val currentState = brailleInputStateFlow.value
-                android.util.Log.d("MainActivity", "시청각장애인 점자 전송 - 현재 상태: $currentState")
-                android.util.Log.d("MainActivity", "전송할 텍스트: '${currentState.inputText}' (길이: ${currentState.inputText.length})")
-                viewModel.addBrailleMessage(currentState.inputText)
-            },
-            // 오른쪽 사용자 (음성 발화자) 입력
-            onSightedTextMessage = { content ->
-                viewModel.addSightedTextMessage(content)
-            },
-            onSightedVoiceMessage = {
-                // Check permission before starting speech recognition
-                if (viewModel.hasRecordAudioPermission(context)) {
-                    viewModel.toggleSpeechRecognition()
-                } else {
-                    requestPermission(Manifest.permission.RECORD_AUDIO)
+                // 왼쪽 사용자 (시청각장애인) 점자 입력만 유지
+                onVisualImpairedBrailleMessage = {
+                    val currentState = brailleInputStateFlow.value
+                    android.util.Log.d("MainActivity", "시청각장애인 점자 전송 - 현재 상태: $currentState")
+                    android.util.Log.d("MainActivity", "전송할 텍스트: '${currentState.inputText}' (길이: ${currentState.inputText.length})")
+                    viewModel.addBrailleMessage(currentState.inputText)
+                },
+                // 오른쪽 사용자 (음성 발화자) 입력
+                onSightedTextMessage = { content ->
+                    viewModel.addSightedTextMessage(content)
+                },
+                onSightedVoiceMessage = {
+                    // Check permission before starting speech recognition
+                    if (viewModel.hasRecordAudioPermission(context)) {
+                        viewModel.toggleSpeechRecognition()
+                    } else {
+                        requestPermission(Manifest.permission.RECORD_AUDIO)
+                    }
+                },
+                // 공통 상태
+                isListening = isListening,
+                messages = messages,
+                // 점자 입력 관련 매개변수
+                brailleInputState = brailleInputStateFlow,
+                onBrailleDotTouched = { dotIndex ->
+                    viewModel.onBrailleDotTouched(dotIndex)
+                },
+                onBrailleComplete = {
+                    viewModel.onBrailleComplete()
+                },
+                onBrailleClear = {
+                    viewModel.onBrailleClear()
+                },
+                onBrailleSend = {
+                    val currentState = brailleInputStateFlow.value
+                    viewModel.addBrailleMessage(currentState.inputText)
+                },
+                // 음성 점자 패턴 관련 매개변수
+                onNextVoicePattern = {
+                    viewModel.nextVoiceBraillePattern()
+                },
+                onPreviousVoicePattern = {
+                    viewModel.previousVoiceBraillePattern()
+                },
+                onExitVoiceMode = {
+                    viewModel.exitVoiceBrailleMode()
                 }
-            },
-            // 공통 상태
-            isListening = isListening,
-            messages = messages,
-            // 점자 입력 관련 매개변수
-            brailleInputState = brailleInputStateFlow,
-            onBrailleDotTouched = { dotIndex ->
-                viewModel.onBrailleDotTouched(dotIndex)
-            },
-            onBrailleComplete = {
-                viewModel.onBrailleComplete()
-            },
-            onBrailleClear = {
-                viewModel.onBrailleClear()
-            },
-            onBrailleSend = {
-                val currentState = brailleInputStateFlow.value
-                viewModel.addBrailleMessage(currentState.inputText)
-            },
-            // 음성 점자 패턴 관련 매개변수
-            onNextVoicePattern = {
-                viewModel.nextVoiceBraillePattern()
-            },
-            onPreviousVoicePattern = {
-                viewModel.previousVoiceBraillePattern()
-            },
-            onExitVoiceMode = {
-                viewModel.exitVoiceBrailleMode()
-            }
             )
         }
     }

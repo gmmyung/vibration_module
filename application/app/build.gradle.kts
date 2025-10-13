@@ -83,6 +83,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
     
+    // Activity Result API
+    implementation("androidx.activity:activity-ktx:1.9.0")
+    implementation("androidx.activity:activity-compose:1.9.0")
+    
     // JSON serialization
     implementation("com.google.code.gson:gson:2.10.1")
     

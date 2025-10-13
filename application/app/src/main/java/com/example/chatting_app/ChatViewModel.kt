@@ -832,7 +832,30 @@ class ChatViewModel : ViewModel() {
      * WiFi 서버에 연결
      */
     fun connectToWifiServer(ipAddress: String, port: Int = 8888) {
+        Log.d("ChatViewModel", "Connecting to WiFi server: $ipAddress:$port")
         messageManager?.connectWifi(ipAddress, port)
+        
+        // 연결 상태 모니터링
+        viewModelScope.launch {
+            messageManager?.connectionState?.collect { state ->
+                Log.d("ChatViewModel", "WiFi connection state changed: $state")
+                when (state) {
+                    com.example.chatting_app.network.ConnectionState.CONNECTED -> {
+                        Log.d("ChatViewModel", "WiFi connected successfully")
+                        _localIpAddress.value = getLocalIpAddress()
+                    }
+                    com.example.chatting_app.network.ConnectionState.ERROR -> {
+                        Log.e("ChatViewModel", "WiFi connection error")
+                    }
+                    com.example.chatting_app.network.ConnectionState.DISCONNECTED -> {
+                        Log.d("ChatViewModel", "WiFi disconnected")
+                    }
+                    else -> {
+                        Log.d("ChatViewModel", "WiFi connection state: $state")
+                    }
+                }
+            }
+        }
     }
     
     /**
@@ -1069,6 +1092,28 @@ class ChatViewModel : ViewModel() {
             sendWifiBrailleInput(text, braille)
             Log.d("ChatViewModel", "점자 입력 결과를 WiFi로 전송: $text")
         }
+    }
+    
+    /**
+     * 로컬 IP 주소 가져오기
+     */
+    private fun getLocalIpAddress(): String? {
+        try {
+            val interfaces = java.net.NetworkInterface.getNetworkInterfaces()
+            while (interfaces.hasMoreElements()) {
+                val networkInterface = interfaces.nextElement()
+                val addresses = networkInterface.inetAddresses
+                while (addresses.hasMoreElements()) {
+                    val address = addresses.nextElement()
+                    if (!address.isLoopbackAddress && address is java.net.Inet4Address) {
+                        return address.hostAddress
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("ChatViewModel", "Failed to get local IP address: ${e.message}")
+        }
+        return null
     }
     
     /**
