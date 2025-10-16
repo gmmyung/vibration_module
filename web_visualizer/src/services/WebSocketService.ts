@@ -1,6 +1,7 @@
 // WebSocket 통신 서비스
 import { WebSocketMessageType, BraillePatternMessage, ConnectedMessage, StatusMessage } from '../types/websocket';
 import { BraillePattern } from '../types/braille';
+import { NetworkUtils } from '../utils/networkUtils';
 
 export interface ClientInfo {
   id: string;
@@ -13,7 +14,7 @@ export interface ClientInfo {
 
 export class WebSocketService {
   private ws: WebSocket | null = null;
-  private url: string;
+  private url: string | null = null;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectInterval = 3000;
@@ -32,17 +33,29 @@ export class WebSocketService {
   public onClose?: (event: CloseEvent) => void;
 
   constructor(url?: string) {
-    this.url = url || this.getDefaultURL();
+    this.url = url || null;
   }
 
-  private getDefaultURL(): string {
-    // 항상 서버의 네트워크 IP 사용 (172.20.100.102)
-    return 'ws://172.20.100.102:8889/ws';
+  private async getDefaultURL(): Promise<string> {
+    try {
+      // 동적으로 로컬 IP 감지
+      const localIP = await NetworkUtils.getLocalIP();
+      return `ws://${localIP}:8889/ws`;
+    } catch (error) {
+      console.error('IP 감지 실패, 기본값 사용:', error);
+      // IP 감지 실패 시 localhost 사용
+      return 'ws://localhost:8889/ws';
+    }
   }
 
-  connect(): Promise<void> {
-    return new Promise((resolve, reject) => {
+  async connect(): Promise<void> {
+    return new Promise(async (resolve, reject) => {
       try {
+        // URL이 없으면 동적으로 생성
+        if (!this.url) {
+          this.url = await this.getDefaultURL();
+        }
+        
         this.ws = new WebSocket(this.url);
         
         this.ws.onopen = () => {
@@ -132,8 +145,12 @@ export class WebSocketService {
       this.reconnectAttempts++;
       console.log(`재연결 시도 ${this.reconnectAttempts}/${this.maxReconnectAttempts}`);
       
-      setTimeout(() => {
-        this.connect().catch(console.error);
+      setTimeout(async () => {
+        try {
+          await this.connect();
+        } catch (error) {
+          console.error('재연결 실패:', error);
+        }
       }, this.reconnectInterval);
     } else {
       console.error('최대 재연결 시도 횟수 초과');

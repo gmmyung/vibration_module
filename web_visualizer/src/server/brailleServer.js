@@ -31,7 +31,7 @@ class BrailleServer {
       
       console.log(`🔍 WebSocket 연결 시도: ${clientAddress} (${userAgent})`);
       
-      // 내부 연결 차단 (로컬호스트만 차단, WSL은 허용)
+      // 내부 연결 차단 (로컬호스트만 차단, 네트워크 연결은 허용)
       const isInternalConnection = 
         clientAddress === '127.0.0.1' || 
         clientAddress === '::1' || 
@@ -42,6 +42,8 @@ class BrailleServer {
         ws.close(1000, 'Internal connections are not allowed');
         return;
       }
+      
+      console.log(`✅ 네트워크 연결 허용: ${clientAddress} (${userAgent})`);
       
       const clientId = `ws_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       

@@ -34,7 +34,7 @@ try {
 # 서버 실행
 Write-Host "🚀 서버 시작 중..." -ForegroundColor Cyan
 Write-Host "   - TCP 서버: 포트 8888 (ESP32 앱용)" -ForegroundColor White
-Write-Host "   - WebSocket 서버: 포트 8888 (웹 클라이언트용)" -ForegroundColor White
+Write-Host "   - WebSocket 서버: 포트 8889 (웹 클라이언트용)" -ForegroundColor White
 Write-Host "   - Express API 서버: 포트 3001 (WiFi IP API용)" -ForegroundColor White
 Write-Host "   - React 앱: 포트 3000 (웹 시각화)" -ForegroundColor White
 Write-Host ""
