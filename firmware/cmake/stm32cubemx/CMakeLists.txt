@@ -27,6 +27,13 @@ set(MX_Application_Src
     ${CMAKE_CURRENT_SOURCE_DIR}/../../startup_stm32g031xx.s
 )
 
+if(DEFINED TOOLCHAIN_LINK_LIBRARIES)
+    list(FIND TOOLCHAIN_LINK_LIBRARIES rdimon _rdimon_index)
+    if(_rdimon_index GREATER -1)
+        list(REMOVE_ITEM MX_Application_Src ${CMAKE_CURRENT_SOURCE_DIR}/../../Core/Src/syscalls.c)
+    endif()
+endif()
+
 # STM32 HAL/LL Drivers
 set(STM32_Drivers_Src
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Core/Src/system_stm32g0xx.c

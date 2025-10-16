@@ -2,3 +2,5 @@
 build
 gerber/.DS_Store
 .DS_Store
+firmware/.cache/clangd/index
+hardware/vibration_module-backups
