@@ -1,6 +1,11 @@
-.cache/clangd/index
-build
-gerber/.DS_Store
+# macOS metadata
 .DS_Store
-firmware/.cache/clangd/index
-hardware/vibration_module-backups
+
+# Build output directories
+**/build/
+
+# clangd cache
+**/.cache/clangd/
+
+# KiCad backups
+**/vibration_module-backups/
